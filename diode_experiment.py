@@ -4,6 +4,8 @@ import pyvisa  # pyright: ignore[reportMissingImports]
 
 import matplotlib.pyplot as plt
 
+import csv  # noqa: F401
+
 rm = pyvisa.ResourceManager("@py")
 
 ports = rm.list_resources()
