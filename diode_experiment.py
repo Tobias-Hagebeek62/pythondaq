@@ -66,32 +66,92 @@ def spanningstoename_LED():
 
 
 # print(    f"final_value = {spanningstoename_LED()[0]}, Voltage = {spanningstoename_LED()[1]}, ruwe waarde spanning over weerstand")
-def meerdere_functies():
+def meerdere_metingen():
     aantal_metingen = 0
-    while aantal_metingen < 3:
-        output = spanningstoename_LED()
+    conversie = 3.3 / 1023
 
-        aantal_metingen += 1
+    L_Voltage_AVG = []
+    L_Current_AVG = []
+
+    L_Voltage = []
+    L_Current = []
+
+    L_STD_V = []
+    L_STD_I = []
+
+    for x in range(0, 1024, 1):
+        # resetten van sommen
+        Voltage_sum = 0
+        Current_resistance_sum = 0
+
+        # onnodige values niet opnieuw aangeroepen, zoals raw data sum
+        while aantal_metingen < 3:
+            spanningsbron = int(device.query(f"OUT:CH0 {x}"))
+            final_value = int(device.query("MEAS:CH1?"))
+
+            Voltage = final_value * conversie
+            Voltage_sum += Voltage
+            L_Voltage.append(Voltage)
+
+            final_value_resistance = int(device.query("MEAS:CH2?"))
+
+            Voltage_resistance = final_value_resistance * conversie
+            Current_resistance = Voltage_resistance / 220
+            L_Current.append(Current_resistance)
+
+            Current_resistance_sum += Current_resistance
+
+            device.query("OUT:CH0 0")
+            aantal_metingen += 1
+
+        Voltage_AVG = Voltage_sum / aantal_metingen
+        L_Voltage_AVG.append(Voltage_AVG)
+
+        L_STD_V.append(std(L_Voltage, Voltage_AVG))
+
+        Current_AVG = Current_resistance_sum / aantal_metingen
+        L_Current_AVG.append(Current_AVG)
+
+        L_STD_I.append(std(L_Current_AVG, Current_AVG))
+
+        aantal_metingen = 0
+
+    return L_Voltage_AVG, L_Current_AVG, L_STD_V, L_STD_I
 
 
-# Slechts de belangrijke lines aangelaten
-output = spanningstoename_LED()
+def std(L_values, avg):
+    steps = 0
+    while steps < len(L_values):
+        # element is 1 punt in de sum
+        L_element = []
+        L_element.append((((L_values[0] - avg) ** 2) / len(L_values)) ** 0.5)
+
+        steps += 1
+    std = sum(L_element)
+    return std
+
+
+# Slechts de belangrijke lines aangelaten, deze hierna uitgezet naarmate de opdracht verder ging
+# output = spanningstoename_LED()
 # L_raw_LED = output[0]
-L_V_LED = output[1]
+# L_V_LED = output[1]
 # L_raw_res = output[2]
 # L_V_res = output[3]
-L_I_res = output[4]
+# L_I_res = output[4]
+
+output = meerdere_metingen()
+L_voltage_AVG = output[0]
+L_current_AVG = output[1]
+L_STD_V = output[2]
+L_STD_I = output[3]
 
 
-def meerdere_functies():
-    aantal_metingen = 0
-    L_gem_spanning = []
-    L_gem_stroom = []
-
-    while aantal_metingen < 3:
-        output = spanningstoename_LED()
-        aantal_metingen += 1
-
-
-plt.plot(L_V_LED, L_I_res)
+plt.plot(
+    L_voltage_AVG,
+    L_current_AVG,
+)
+plt.errorbar(
+    L_voltage_AVG, L_current_AVG, xerr=L_STD_V, yerr=L_STD_I, label="Errorbars", fmt="o"
+)
+plt.legend()
 plt.show()
