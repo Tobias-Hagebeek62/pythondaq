@@ -156,12 +156,18 @@ L_STD_V = output[2]
 L_STD_I = output[3]
 
 
-plt.plot(
+plt.errorbar(
     L_voltage_AVG,
     L_current_AVG,
+    xerr=L_STD_V,
+    yerr=L_STD_I,
+    label="Errorbars",
+    fmt="",
+    markersize=0,
 )
-plt.errorbar(
-    L_voltage_AVG, L_current_AVG, xerr=L_STD_V, yerr=L_STD_I, label="Errorbars"
-)
+
+# data zit verstopt achter errorbars door hoge concentratie punten
+plt.plot(L_voltage_AVG, L_current_AVG, label="Data", markersize=3)
+
 plt.legend()
 plt.show()
