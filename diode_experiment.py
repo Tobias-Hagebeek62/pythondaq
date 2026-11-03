@@ -89,15 +89,17 @@ def meerdere_metingen():
         # onnodige values niet opnieuw aangeroepen, zoals raw data sum
         while aantal_metingen < 3:
             spanningsbron = int(device.query(f"OUT:CH0 {x}"))
-            final_value = int(device.query("MEAS:CH1?"))
+            final_value1 = int(device.query("MEAS:CH1?"))
 
-            Voltage = final_value * conversie
+            final_value_2 = int(device.query("MEAS:CH2?"))
+
+            # met behulp van TA gekeken naar schakeling en de correcte spanning over LED opgevraagd
+            Voltage = (final_value1 - final_value_2) * conversie
             Voltage_sum += Voltage
             L_Voltage.append(Voltage)
 
-            final_value_resistance = int(device.query("MEAS:CH2?"))
-
-            Voltage_resistance = final_value_resistance * conversie
+            Voltage_resistance = final_value_2 * conversie
+            # I = U/R
             Current_resistance = Voltage_resistance / 220
             L_Current.append(Current_resistance)
 
@@ -117,6 +119,12 @@ def meerdere_metingen():
         L_STD_I.append(std(L_Current_AVG, Current_AVG))
 
         aantal_metingen = 0
+
+    with open("measurements.csv", "w", newline="") as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(["Voltage", "Current"])
+        for a, b in zip(L_Voltage, L_Current):
+            writer.writerow([a, b])
 
     return L_Voltage_AVG, L_Current_AVG, L_STD_V, L_STD_I
 
@@ -153,7 +161,7 @@ plt.plot(
     L_current_AVG,
 )
 plt.errorbar(
-    L_voltage_AVG, L_current_AVG, xerr=L_STD_V, yerr=L_STD_I, label="Errorbars", fmt="o"
+    L_voltage_AVG, L_current_AVG, xerr=L_STD_V, yerr=L_STD_I, label="Errorbars"
 )
 plt.legend()
 plt.show()
