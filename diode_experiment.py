@@ -6,22 +6,53 @@ import matplotlib.pyplot as plt
 
 import csv  # noqa: F401
 
-rm = pyvisa.ResourceManager("@py")
-
-ports = rm.list_resources()
-
-device = rm.open_resource(
-    "ASRL4::INSTR", read_termination="\r\n", write_termination="\n"
-)
+conversie = 1023 / 3.3  # van voltage naar ADC
 
 
-def ADC_to_Voltage(ADC):
-    Maximale_voltage = 3.3
-    Aantal_stappen = 1023
-    Stapsgrootte = Maximale_voltage / Aantal_stappen
-    Voltage = ADC * Stapsgrootte
+def list_resources():
+    rm = pyvisa.ResourceManager("@py")
+    ports = rm.list_resources()
+    return ports
 
-    return Voltage
+
+class ArduinoVISADevice:
+    def __init__(self, port):
+        self.port = port
+        rm = pyvisa.ResourceManager("@py")
+        self.device = rm.open_resource(
+            self.port, read_termination="\r\n", write_termination="\n"
+        )
+
+    def get_identification(self):
+        identification = self.device.query("*IDN?")
+        self.idenfication = identification
+        return self.idenfication
+
+    def set_output_value(self, value):
+        final_value = self.device.query(f"OUT:CH0 {value}")
+        return final_value
+
+    def set_output_voltage(self, voltage):
+        converted_voltage = int(voltage * conversie)
+        final_value = self.device.query(f"OUT:CH0 {converted_voltage}")
+        return final_value
+
+    # measure the voltage on INPUT channel 2 in ADC values (0 - 1023)
+    def get_output_value(self):
+        final_value = self.device.query("MEAS:CH0?")
+        return final_value
+
+    def get_output_voltage(self):
+        final_voltage = self.device.query("MEAS:CH0?") / conversie
+        return final_voltage
+
+    def get_input_value(self, channel):
+        channel_ADC = int(self.device.query(f"MEAS:CH{channel}?"))
+        return channel_ADC
+
+    def get_input_voltage(self, channel):
+        channel_voltage = int(self.device.query(f"MEAS:CH{channel}?")) / conversie
+        return channel_voltage
 
 
 def spanningstoename_LED():
@@ -70,7 +101,6 @@ def spanningstoename_LED():
 # print(    f"final_value = {spanningstoename_LED()[0]}, Voltage = {spanningstoename_LED()[1]}, ruwe waarde spanning over weerstand")
 def meerdere_metingen():
     aantal_metingen = 0
-    conversie = 3.3 / 1023
 
     L_Voltage_AVG = []
     L_Current_AVG = []
@@ -88,17 +118,16 @@ def meerdere_metingen():
 
         # onnodige values niet opnieuw aangeroepen, zoals raw data sum
         while aantal_metingen < 3:
-            spanningsbron = int(device.query(f"OUT:CH0 {x}"))
             final_value1 = int(device.query("MEAS:CH1?"))
 
             final_value_2 = int(device.query("MEAS:CH2?"))
 
             # met behulp van TA gekeken naar schakeling en de correcte spanning over LED opgevraagd
-            Voltage = (final_value1 - final_value_2) * conversie
+            Voltage = (final_value1 - final_value_2) / conversie
             Voltage_sum += Voltage
             L_Voltage.append(Voltage)
 
-            Voltage_resistance = final_value_2 * conversie
+            Voltage_resistance = final_value_2 / conversie
             # I = U/R
             Current_resistance = Voltage_resistance / 220
             L_Current.append(Current_resistance)
@@ -140,6 +169,8 @@ def std(L_values, avg):
     std = sum(L_element)
     return std
 
+
+device = ArduinoVISADevice(port="ASRL4::INSTR")
 
 # Slechts de belangrijke lines aangelaten, deze hierna uitgezet naarmate de opdracht verder ging
 # output = spanningstoename_LED()
