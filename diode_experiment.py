@@ -138,7 +138,6 @@ def meerdere_metingen():
             L_Current_temp.append(Current_resistance)
             L_Current_tot.append(Current_resistance)
 
-            device.set_output_value(0)
             aantal_metingen += 1
 
         Voltage_AVG = sum(L_Voltage_temp) / len(L_Voltage_temp)
