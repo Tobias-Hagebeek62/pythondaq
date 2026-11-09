@@ -164,6 +164,7 @@ def meerdere_metingen():
     return L_Voltage_AVG, L_Current_AVG, L_STD_V, L_STD_I
 
 
+# np.std ontweken en in plaats daarvan deze gebruikt. Hierdoor wordt namelijk de steekproef-standaardafwijking berekend in plaats van de populatie-standaardafwijking
 def std(L_values):
     if len(L_values) < 2:
         return 0.0
