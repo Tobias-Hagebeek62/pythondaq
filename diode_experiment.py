@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 
 import csv  # noqa: F401
 
+import numpy as np
+
 conversie = 1023 / 3.3  # van voltage naar ADC
 
 
@@ -100,74 +102,73 @@ def spanningstoename_LED():
 
 # print(    f"final_value = {spanningstoename_LED()[0]}, Voltage = {spanningstoename_LED()[1]}, ruwe waarde spanning over weerstand")
 def meerdere_metingen():
-    aantal_metingen = 0
 
     L_Voltage_AVG = []
     L_Current_AVG = []
 
-    L_Voltage = []
-    L_Current = []
+    # Lijsten die alle waarden opslaan voor het measurements-bestand
+    L_Voltage_tot = []
+    L_Current_tot = []
 
     L_STD_V = []
     L_STD_I = []
 
     for x in range(0, 1024, 1):
-        # resetten van sommen
-        Voltage_sum = 0
-        Current_resistance_sum = 0
+        # resetten van aantal metingen en spanning op lampje (range begint op 0)
+        aantal_metingen = 0
+        device.set_output_value(x)
+
+        # tijdelijke lijsten voor het berekenen van de std en avg
+        L_Voltage_temp = []
+        L_Current_temp = []
 
         # onnodige values niet opnieuw aangeroepen, zoals raw data sum
         while aantal_metingen < 3:
-            final_value1 = int(device.query("MEAS:CH1?"))
-
-            final_value_2 = int(device.query("MEAS:CH2?"))
+            final_value1 = device.get_input_value(1)
+            final_value_2 = device.get_input_value(2)
 
             # met behulp van TA gekeken naar schakeling en de correcte spanning over LED opgevraagd
             Voltage = (final_value1 - final_value_2) / conversie
-            Voltage_sum += Voltage
-            L_Voltage.append(Voltage)
+            L_Voltage_temp.append(Voltage)
+            L_Voltage_tot.append(Voltage)
 
             Voltage_resistance = final_value_2 / conversie
             # I = U/R
             Current_resistance = Voltage_resistance / 220
-            L_Current.append(Current_resistance)
+            L_Current_temp.append(Current_resistance)
+            L_Current_tot.append(Current_resistance)
 
-            Current_resistance_sum += Current_resistance
-
-            device.query("OUT:CH0 0")
+            device.set_output_value(0)
             aantal_metingen += 1
 
-        Voltage_AVG = Voltage_sum / aantal_metingen
+        Voltage_AVG = sum(L_Voltage_temp) / len(L_Voltage_temp)
         L_Voltage_AVG.append(Voltage_AVG)
 
-        L_STD_V.append(std(L_Voltage, Voltage_AVG))
+        L_STD_V.append(std(L_Voltage_temp))
 
-        Current_AVG = Current_resistance_sum / aantal_metingen
+        Current_AVG = sum(L_Current_temp) / len(L_Current_temp)
         L_Current_AVG.append(Current_AVG)
 
-        L_STD_I.append(std(L_Current_AVG, Current_AVG))
+        L_STD_I.append(std(L_Current_temp))
 
         aantal_metingen = 0
+
+    # Na de metingen de spanningsbron uitzetten
+    device.set_output_value(0)
 
     with open("measurements.csv", "w", newline="") as csvfile:
         writer = csv.writer(csvfile)
         writer.writerow(["Voltage", "Current"])
-        for a, b in zip(L_Voltage, L_Current):
+        for a, b in zip(L_Voltage_tot, L_Current_tot):
             writer.writerow([a, b])
 
     return L_Voltage_AVG, L_Current_AVG, L_STD_V, L_STD_I
 
 
-def std(L_values, avg):
-    steps = 0
-    while steps < len(L_values):
-        # element is 1 punt in de sum
-        L_element = []
-        L_element.append((((L_values[0] - avg) ** 2) / len(L_values)) ** 0.5)
-
-        steps += 1
-    std = sum(L_element)
-    return std
+def std(L_values):
+    if len(L_values) < 2:
+        return 0.0
+    return np.std(L_values, ddof=1)
 
 
 device = ArduinoVISADevice(port="ASRL4::INSTR")
