@@ -126,36 +126,3 @@ class ArduinoVISADeviceMock:
 
     def get_input_voltage(self, channel):
         return self.get_input_value(channel) / conversie
-
-
-# get available ports
-print(list_resources())
-
-# create an instance for the Arduino on port "ASRL4::INSTR" (dit is mijn port uit print(list_resources())
-device = ArduinoVISADevice(port="ASRL4::INSTR")
-
-# print identification string
-identification = device.get_identification()
-print(identification)
-
-# set OUTPUT voltage on channel 0 in Volt (0 - 3.3 V)
-response = device.set_output_voltage(voltage=3.3)
-print(f"{response=}")
-
-# set OUTPUT voltage on channel 0 in ADC values (0 - 1023)
-device.set_output_value(value=828)
-
-# measure the voltage on INPUT channel 2 in ADC values (0 - 1023)
-ch2_value = device.get_input_value(channel=2)
-print(f"{ch2_value=}")
-
-# measure the voltage on INPUT channel 2 in Volt (0 - 3.3 V)
-ch2_voltage = device.get_input_voltage(channel=2)
-print(f"{ch2_voltage=}")
-
-# get the previously set OUTPUT voltage on channel 0 in ADC values (0 - 1023)
-ch0_value = device.get_output_value()
-print(f"{ch0_value=}")
-
-# turn of the LED
-device.set_output_voltage(voltage=0)

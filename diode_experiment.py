@@ -157,7 +157,8 @@ def meerdere_metingen():
     # Na de metingen de spanningsbron uitzetten
     device.set_output_value(0)
 
-    with open("measurements.csv", "w", newline="") as csvfile:
+    # nieuwe CSV-file gemaakt, sinds de "mock-arduino" niet echte metingen zijn
+    with open("measurements2.csv", "w", newline="") as csvfile:
         writer = csv.writer(csvfile)
         writer.writerow(["Voltage", "Current"])
         for a, b in zip(L_Voltage_tot, L_Current_tot):
