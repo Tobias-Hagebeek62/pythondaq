@@ -8,6 +8,8 @@ import csv  # noqa: F401
 
 import numpy as np
 
+from arduino_device import ArduinoVISADevice, list_resources
+
 conversie = 1023 / 3.3  # van voltage naar ADC
 
 
@@ -140,12 +142,12 @@ def meerdere_metingen():
 
             aantal_metingen += 1
 
-        Voltage_AVG = sum(L_Voltage_temp) / len(L_Voltage_temp)
+        Voltage_AVG = np.mean(L_Voltage_temp)
         L_Voltage_AVG.append(Voltage_AVG)
 
         L_STD_V.append(std(L_Voltage_temp))
 
-        Current_AVG = sum(L_Current_temp) / len(L_Current_temp)
+        Current_AVG = np.mean(L_Current_temp)
         L_Current_AVG.append(Current_AVG)
 
         L_STD_I.append(std(L_Current_temp))
