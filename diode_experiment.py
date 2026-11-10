@@ -30,7 +30,8 @@ class DiodeExperiment:
         L_STD_V = []
         L_STD_I = []
 
-        for x in range(start, stop, 1):
+        # stop +1 zodat de maximale ADC waarde 1023 is en de for-loop 1 verder moet
+        for x in range(start, stop + 1, 1):
             # resetten van aantal metingen en spanning op lampje (range begint op 0)
             aantal_metingen = 0
             device.set_output_value(x)
@@ -75,9 +76,11 @@ class DiodeExperiment:
         # nieuwe CSV-file gemaakt, sinds de "mock-arduino" niet echte metingen zijn
         with open("measurements2.csv", "w", newline="") as csvfile:
             writer = csv.writer(csvfile)
-            writer.writerow(["Voltage", "Current"])
-            for a, b in zip(L_Voltage_tot, L_Current_tot):
-                writer.writerow([a, b])
+            writer.writerow(
+                ["Voltage [V]", "Error Voltage +/-", "Current [A]", "Error Current +/-"]
+            )
+            for a, b, c, d in zip(L_Voltage_tot, L_STD_V, L_Current_tot, L_STD_I):
+                writer.writerow([a, b, c, d])
 
         return L_Voltage_AVG, L_Current_AVG, L_STD_V, L_STD_I
 
@@ -88,25 +91,27 @@ class DiodeExperiment:
 # Deze activeren als geen arduino beschikbaar is
 device = ArduinoDevice(port="SIM")
 
-output = DiodeExperiment.scan(0, 1024, 3)
+output = DiodeExperiment.scan(0, 1023, 3)
 L_voltage_AVG = output[0]
 L_current_AVG = output[1]
 L_STD_V = output[2]
 L_STD_I = output[3]
 
 
-plt.errorbar(
-    L_voltage_AVG,
-    L_current_AVG,
-    xerr=L_STD_V,
-    yerr=L_STD_I,
-    label="Errorbars",
-    fmt="",
-    markersize=0,
-)
+# Volgens voorbeeldcode moet de plot in run_experiment.py
 
-# data zit verstopt achter errorbars door hoge concentratie punten
-plt.scatter(L_voltage_AVG, L_current_AVG, label="Data", s=10, alpha=0.7)
+# plt.errorbar(
+#     L_voltage_AVG,
+#     L_current_AVG,
+#     xerr=L_STD_V,
+#     yerr=L_STD_I,
+#     label="Errorbars",
+#     fmt="",
+#     markersize=0,
+# )
 
-plt.legend()
-plt.show()
+# # data zit verstopt achter errorbars door hoge concentratie punten
+# plt.scatter(L_voltage_AVG, L_current_AVG, label="Data", s=10, alpha=0.7)
+
+# plt.legend()
+# plt.show()
