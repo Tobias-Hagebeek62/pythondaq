@@ -39,3 +39,15 @@ plt.scatter(L_voltage_AVG, L_current_AVG, label="Data", s=10, alpha=0.7)
 
 plt.legend()
 plt.show()
+
+
+def main() -> None:
+    """External commando
+
+    Function that allows the file to be run via external software, like command prompt. Module can be ran by typing pythondaq in command prompt
+    """
+    pass
+
+
+if __name__ == "__main__":
+    main()
