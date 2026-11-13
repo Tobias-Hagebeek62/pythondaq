@@ -99,7 +99,7 @@ class DiodeExperiment:
         device.set_output_value(0)
 
         # nieuwe CSV-file gemaakt, sinds de "mock-arduino" niet echte metingen zijn
-        with open("measurements1.csv", "w", newline="") as csvfile:
+        with open("measurements.csv", "w", newline="") as csvfile:
             writer = csv.writer(csvfile)
             writer.writerow(
                 ["Voltage [V]", "Error Voltage +/-", "Current [A]", "Error Current +/-"]
