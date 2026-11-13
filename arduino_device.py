@@ -208,3 +208,6 @@ class ArduinoVISADeviceMock:
 
     def get_input_voltage(self, channel):
         return self.get_input_value(channel) / conversie
+
+
+print(list_resources())

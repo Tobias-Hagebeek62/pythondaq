@@ -3,9 +3,6 @@ import numpy as np
 
 from diode_experiment import ArduinoDevice, DiodeExperiment, list_resources
 
-# Deze activeren op locatie
-device = ArduinoDevice(port="ASRL5::INSTR")
-
 # Deze activeren als geen arduino beschikbaar is
 # device = ArduinoDevice(port="SIM")
 
