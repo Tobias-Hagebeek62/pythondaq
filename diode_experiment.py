@@ -14,10 +14,10 @@ import csv  # noqa: F401
 import numpy as np
 
 # Deze activeren als arduino niet beschikbaar is
-from arduino_device import ArduinoVISADeviceMock as ArduinoDevice, list_resources
+# from arduino_device import ArduinoVISADeviceMock as ArduinoDevice, list_resources
 
 # Deze activeren op locatie
-# from arduino_device import ArduinoVISADevice as ArduinoDevice, list_resources
+from arduino_device import ArduinoVISADevice as ArduinoDevice, list_resources
 
 conversie = 1023 / 3.3  # van voltage naar ADC
 
@@ -111,10 +111,10 @@ class DiodeExperiment:
 
 
 # Deze activeren op locatie
-# device = ArduinoDevice(port="ASRL4::INSTR")
+device = ArduinoDevice(port="ASRL4::INSTR")
 
 # Deze activeren als geen arduino beschikbaar is
-device = ArduinoDevice(port="SIM")
+# device = ArduinoDevice(port="SIM")
 
 output = DiodeExperiment.scan(0, 1023, 3)
 L_voltage_AVG = output[0]
