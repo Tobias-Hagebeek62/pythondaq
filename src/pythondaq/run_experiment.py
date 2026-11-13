@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-from diode_experiment import ArduinoDevice, DiodeExperiment, list_resources
+from pythondaq.diode_experiment import ArduinoDevice, DiodeExperiment, list_resources
 
 # Deze activeren als geen arduino beschikbaar is
 # device = ArduinoDevice(port="SIM")

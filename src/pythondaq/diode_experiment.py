@@ -17,7 +17,7 @@ import numpy as np
 # from arduino_device import ArduinoVISADeviceMock as ArduinoDevice, list_resources
 
 # Deze activeren op locatie
-from arduino_device import ArduinoVISADevice as ArduinoDevice, list_resources
+from pythondaq.arduino_device import ArduinoVISADevice as ArduinoDevice, list_resources
 
 conversie = 1023 / 3.3  # van voltage naar ADC
 
