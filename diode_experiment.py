@@ -111,7 +111,7 @@ class DiodeExperiment:
 
 
 # Deze activeren op locatie
-device = ArduinoDevice(port="ASRL4::INSTR")
+device = ArduinoDevice(port="ASRL5::INSTR")
 
 # Deze activeren als geen arduino beschikbaar is
 # device = ArduinoDevice(port="SIM")
