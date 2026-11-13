@@ -1,3 +1,8 @@
+"""Module that allows to run a diode experiment multiple times
+
+This module allows the user to easily utilize the functions from arduino_device by just having to input the start and stop ADC values, and how many times the experiment needs to be ran before making graphs.
+"""
+
 import time  # noqa: F401, I001, RUF100
 
 import pyvisa  # pyright: ignore[reportMissingImports]
@@ -17,9 +22,29 @@ from arduino_device import ArduinoVISADeviceMock as ArduinoDevice, list_resource
 conversie = 1023 / 3.3  # van voltage naar ADC
 
 
-# print(    f"final_value = {spanningstoename_LED()[0]}, Voltage = {spanningstoename_LED()[1]}, ruwe waarde spanning over weerstand")
 class DiodeExperiment:
+    """In this class, we use multiple functions from the class ArduinoDevice, imported from another file in this folder.
+
+    This class simulates an experiment that contains a LED-light and a resistance, supported by multiple voltage-measurers and an Arduino device
+    """
+
     def scan(start, stop, repeat):
+        """This function allows the user to run the diode experiment over a customized range of ADC-values.
+
+        These automatically get tested and the values get returned in voltage, which is more useful for physicists.
+        These automatically get saved in a csv-file, which updates every time this function is called
+
+        Args:
+            start (Integer): The user can fill in what the lowest ADC value is that should be tested
+            stop (Integer): The user can fill in what the highest ADC value is that should be tested
+            repeat (Integer): The user can fill in how many times they want the experiment to run, giving more consistent average values
+
+        Returns:
+            L_Voltage_AVG: Returns the average voltage value over the LED, based on the different measurements on the same corresponding ADC value
+            L_Current_AVG: Returns the average current value over the LED, same as above
+            L_STD_V: Returns the standard deviation on the corresponding average, which can be used for errorbars in graphs
+            L_STD_I: Same as above, but for the current
+        """
         L_Voltage_AVG = []
         L_Current_AVG = []
 
