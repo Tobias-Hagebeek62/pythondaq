@@ -4,10 +4,10 @@ import numpy as np
 from diode_experiment import ArduinoDevice, DiodeExperiment, list_resources
 
 # Deze activeren op locatie
-# device = ArduinoDevice(port="ASRL4::INSTR")
+device = ArduinoDevice(port="ASRL4::INSTR")
 
 # Deze activeren als geen arduino beschikbaar is
-device = ArduinoDevice(port="SIM")
+# device = ArduinoDevice(port="SIM")
 
 output = DiodeExperiment.scan(0, 1023, 3)
 L_voltage_AVG = output[0]
