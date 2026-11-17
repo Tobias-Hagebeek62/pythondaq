@@ -1,3 +1,5 @@
+import csv
+
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -11,6 +13,17 @@ L_voltage_AVG = output[0]
 L_current_AVG = output[1]
 L_STD_V = output[2]
 L_STD_I = output[3]
+L_voltage_tot = output[4]
+L_current_tot = output[5]
+
+# nieuwe CSV-file gemaakt, sinds de "mock-arduino" niet echte metingen zijn
+with open("measurements.csv", "w", newline="") as csvfile:
+    writer = csv.writer(csvfile)
+    writer.writerow(
+        ["Voltage [V]", "Error Voltage +/-", "Current [A]", "Error Current +/-"]
+    )
+    for a, b, c, d in zip(L_voltage_tot, L_STD_V, L_current_tot, L_STD_I):
+        writer.writerow([a, b, c, d])
 
 # In de voorbeeldcode van de opdracht wordt gevraagd om de voltage en current +- de onzekerheid te printen, ik snap hier niet per se de meerwaarde van, en sinds ik het met lijsten heb gedaan moet het met een lelijke for-loop :(
 L_Voltage_AVG_with_STD = []

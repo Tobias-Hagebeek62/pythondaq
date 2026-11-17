@@ -107,7 +107,14 @@ class DiodeExperiment:
             for a, b, c, d in zip(L_Voltage_tot, L_STD_V, L_Current_tot, L_STD_I):
                 writer.writerow([a, b, c, d])
 
-        return L_Voltage_AVG, L_Current_AVG, L_STD_V, L_STD_I
+        return (
+            L_Voltage_AVG,
+            L_Current_AVG,
+            L_STD_V,
+            L_STD_I,
+            L_Voltage_tot,
+            L_Current_tot,
+        )
 
 
 # Deze activeren op locatie
