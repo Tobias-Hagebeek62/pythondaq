@@ -35,8 +35,6 @@ print(L_Current_AVG_with_STD)
 print(L_Voltage_AVG_with_STD)
 
 
-# CSV-file al gemaakt in diode_experiment, snap niet waarom hij dan hier gemaakt moet worden als het daar al in de functie zit
-
 plt.errorbar(
     L_voltage_AVG,
     L_current_AVG,

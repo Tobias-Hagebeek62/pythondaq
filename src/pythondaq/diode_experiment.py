@@ -98,15 +98,6 @@ class DiodeExperiment:
         # Na de metingen de spanningsbron uitzetten
         device.set_output_value(0)
 
-        # nieuwe CSV-file gemaakt, sinds de "mock-arduino" niet echte metingen zijn
-        with open("measurements.csv", "w", newline="") as csvfile:
-            writer = csv.writer(csvfile)
-            writer.writerow(
-                ["Voltage [V]", "Error Voltage +/-", "Current [A]", "Error Current +/-"]
-            )
-            for a, b, c, d in zip(L_Voltage_tot, L_STD_V, L_Current_tot, L_STD_I):
-                writer.writerow([a, b, c, d])
-
         return (
             L_Voltage_AVG,
             L_Current_AVG,

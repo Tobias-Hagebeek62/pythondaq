@@ -1,10 +1,14 @@
+import csv
 import math as mt
 
 import click
+import matplotlib.pyplot as plt
 import numpy as np
 
 from pythondaq.arduino_device import list_resources
 from pythondaq.diode_experiment import ArduinoDevice, DiodeExperiment, list_resources
+
+conversie = 1023 / 3.3  # van voltage naar ADC
 
 
 @click.group()
@@ -39,6 +43,45 @@ def list():
     default="measurements",
     help="Name of the csv file that the measurements will be saved in",
 )
-def scan():
+@click.option(
+    "-r",
+    "--repeat",
+    default=1,
+    help="How many times the experiment has to be ran before a graph gets made.",
+)
+def scan(start, stop, output, repeat):
+    # originele functie ging met ADC waardes
+    scanresult = DiodeExperiment.scan(
+        int(start / conversie), int(stop / conversie), repeat
+    )
+    L_voltage_AVG = scanresult[0]
+    L_current_AVG = scanresult[1]
+    L_STD_V = scanresult[2]
+    L_STD_I = scanresult[3]
+    L_voltage_tot = scanresult[4]
+    L_current_tot = scanresult[5]
 
-    pass
+    # nieuwe CSV-file gemaakt, sinds de "mock-arduino" niet echte metingen zijn
+    with open(f"{output}.csv", "w", newline="") as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(
+            ["Voltage [V]", "Error Voltage +/-", "Current [A]", "Error Current +/-"]
+        )
+        for a, b, c, d in zip(L_voltage_tot, L_STD_V, L_current_tot, L_STD_I):
+            writer.writerow([a, b, c, d])
+
+    plt.errorbar(
+        L_voltage_AVG,
+        L_current_AVG,
+        xerr=L_STD_V,
+        yerr=L_STD_I,
+        label="Errorbars",
+        fmt="",
+        markersize=0,
+    )
+
+    # data zit verstopt achter errorbars door hoge concentratie punten
+    plt.scatter(L_voltage_AVG, L_current_AVG, label="Data", s=10, alpha=0.7)
+
+    plt.legend()
+    plt.show()
