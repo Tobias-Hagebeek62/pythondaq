@@ -47,9 +47,25 @@ def list(search):
     type=str,
     help="What port to get the identification string from. Useful when multiple devices are connected to the same device",
 )
-def info(port):
+@click.option(
+    "-qp",
+    "--queryport",
+    type=str,
+    help="Allows user to get information of searched devices using a query, instead of requiring the exact name. Default-query is set to avoid errors as a mock-query that no real user would actually look for",
+    default="6767676767676767",
+)
+def info(port, queryport):
     """Gets the complicated code-variant of the identification given with the subcommand list"""
-    print(ArduinoDevice(port).get_identification())
+    if queryport == "6767676767676767":
+        print(ArduinoDevice(port).get_identification())
+    else:
+        found_devices = list(queryport)
+        if len(found_devices) == 0:
+            print("No devices found with query")
+        else:
+            print(f"{len(found_devices)} found, idenfication of all found devices:")
+            for x in range(len(found_devices)):
+                print(ArduinoDevice(found_devices[x]).get_identification())
 
 
 @cmd_group.command("scan")
