@@ -30,7 +30,7 @@ def list():
 )
 def info(port):
     """Gets the complicated code-variant of the identification given with the subcommand list"""
-    print(ArduinoDevice(port).get_identification)
+    print(ArduinoDevice(port).get_identification())
 
 
 @cmd_group.command("scan")

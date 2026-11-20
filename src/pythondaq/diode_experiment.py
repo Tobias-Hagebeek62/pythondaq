@@ -28,8 +28,10 @@ class DiodeExperiment:
     This class simulates an experiment that contains a LED-light and a resistance, supported by multiple voltage-measurers and an Arduino device
     """
 
-    def scan(start, stop, repeat, stepsize):
-        device = ArduinoDevice(port="ASRL5::INSTR")
+    def __init__(self, port):
+        self.device = ArduinoDevice(port)
+
+    def scan(self, start, stop, repeat, stepsize):
         """This function allows the user to run the diode experiment over a customized range of ADC-values.
 
         These automatically get tested and the values get returned in voltage, which is more useful for physicists.
@@ -56,11 +58,15 @@ class DiodeExperiment:
         L_STD_V = []
         L_STD_I = []
 
+        stepsize_converted = stepsize * conversie
+        start_adc = start * conversie
+        stop_adc = stop * conversie
+
         # stop +1 zodat de maximale ADC waarde 1023 is en de for-loop 1 verder moet
-        for x in np.arange(start, stop + 1, stepsize):
+        for x in np.arange(start_adc, stop_adc + 1, stepsize_converted):
             # resetten van aantal metingen en spanning op lampje (range begint op 0)
             aantal_metingen = 0
-            device.set_output_value(int(x))
+            self.device.set_output_value(int(x))
 
             # tijdelijke lijsten voor het berekenen van de std en avg
             L_Voltage_temp = []
@@ -68,8 +74,8 @@ class DiodeExperiment:
 
             # onnodige values niet opnieuw aangeroepen, zoals raw data sum
             while aantal_metingen < repeat:
-                final_value1 = device.get_input_value(1)
-                final_value_2 = device.get_input_value(2)
+                final_value1 = self.device.get_input_value(1)
+                final_value_2 = self.device.get_input_value(2)
 
                 # met behulp van TA gekeken naar schakeling en de correcte spanning over LED opgevraagd
                 Voltage = (final_value1 - final_value_2) / conversie
@@ -97,7 +103,7 @@ class DiodeExperiment:
             aantal_metingen = 0
 
         # Na de metingen de spanningsbron uitzetten
-        device.set_output_value(0)
+        self.device.set_output_value(0)
 
         return (
             L_Voltage_AVG,
