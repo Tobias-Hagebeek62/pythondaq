@@ -18,7 +18,6 @@ def cmd_group():
 
 @cmd_group.command("list")
 def list():
-    print("Work in progress, list devices")
     pass
 
 
