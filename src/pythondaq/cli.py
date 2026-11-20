@@ -52,7 +52,7 @@ def list():
 def scan(start, stop, output, repeat):
     # originele functie ging met ADC waardes
     scanresult = DiodeExperiment.scan(
-        int(start / conversie), int(stop / conversie), repeat
+        int(start * conversie), int(stop * conversie), repeat
     )
     L_voltage_AVG = scanresult[0]
     L_current_AVG = scanresult[1]
@@ -67,7 +67,7 @@ def scan(start, stop, output, repeat):
         writer.writerow(
             ["Voltage [V]", "Error Voltage +/-", "Current [A]", "Error Current +/-"]
         )
-        for a, b, c, d in zip(L_voltage_tot, L_STD_V, L_current_tot, L_STD_I):
+        for a, b, c, d in zip(L_voltage_AVG, L_STD_V, L_current_AVG, L_STD_I):
             writer.writerow([a, b, c, d])
 
     plt.errorbar(
