@@ -18,7 +18,7 @@ def cmd_group():
 
 @cmd_group.command("list")
 def list():
-    pass
+    print(list_resources())
 
 
 @cmd_group.command("scan")

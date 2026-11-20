@@ -210,4 +210,5 @@ class ArduinoVISADeviceMock:
         return self.get_input_value(channel) / conversie
 
 
-print(list_resources())
+if __name__ == "__main__":
+    print(list_resources())
