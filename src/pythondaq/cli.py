@@ -17,9 +17,28 @@ def cmd_group():
 
 
 @cmd_group.command("list")
-def list():
-    """Prints all connected devices, essential for DiodeExperiment as the right device has to be activated"""
-    print(list_resources())
+@click.option(
+    "--search",
+    "-s",
+    help="The user can give a search-query, and the code automatically finds a corresponding device",
+    default=None,
+)
+def list(search):
+    """Prints connected devices (all, or query based), essential for DiodeExperiment as the right device has to be activated"""
+    if search == None:
+        print(list_resources())
+    else:
+        results = 0
+        all_devices = list_resources()
+        found_devices = []
+        for x in range(len(all_devices)):
+            if search in all_devices[x]:
+                found_devices.append(all_devices[x])
+                results += 1
+        if results == 0:
+            print("No devices found with query")
+        else:
+            print(found_devices)
 
 
 @cmd_group.command("info")
