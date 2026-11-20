@@ -52,12 +52,15 @@ def list():
 @click.option(
     "--stepsize",
     default=3.3 / 1023,
+    type=click.FloatRange(3.3 / 1023, 3.3),
     help="How big voltage difference should be between measurements. Given in Volts, automatically recalculated to ADC values",
 )
 def scan(start, stop, output, repeat, stepsize):
     # originele functie ging met ADC waardes
+    stepsize_converted = stepsize * conversie
+    print(stepsize_converted)
     scanresult = DiodeExperiment.scan(
-        int(start * conversie), int(stop * conversie), repeat, stepsize
+        int(start * conversie), int(stop * conversie), repeat, stepsize_converted
     )
     L_voltage_AVG = scanresult[0]
     L_current_AVG = scanresult[1]

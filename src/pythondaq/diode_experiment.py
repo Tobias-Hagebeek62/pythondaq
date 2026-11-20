@@ -56,10 +56,10 @@ class DiodeExperiment:
         L_STD_I = []
 
         # stop +1 zodat de maximale ADC waarde 1023 is en de for-loop 1 verder moet
-        for x in range(start, stop + 1, stepsize):
+        for x in np.arange(start, stop + 1, stepsize):
             # resetten van aantal metingen en spanning op lampje (range begint op 0)
             aantal_metingen = 0
-            device.set_output_value(x)
+            device.set_output_value(int(x))
 
             # tijdelijke lijsten voor het berekenen van de std en avg
             L_Voltage_temp = []
@@ -113,12 +113,6 @@ device = ArduinoDevice(port="ASRL5::INSTR")
 
 # Deze activeren als geen arduino beschikbaar is
 # device = ArduinoDevice(port="SIM")
-
-output = DiodeExperiment.scan(0, 1023, 3)
-L_voltage_AVG = output[0]
-L_current_AVG = output[1]
-L_STD_V = output[2]
-L_STD_I = output[3]
 
 
 # Volgens voorbeeldcode moet de plot in run_experiment.py
