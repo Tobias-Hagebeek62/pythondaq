@@ -35,6 +35,12 @@ def info(port):
 
 @cmd_group.command("scan")
 @click.option(
+    "--port",
+    type=str,
+    help="What port the arduino is connected to. Use list to find name",
+    required=True,
+)
+@click.option(
     "-sa",
     "--start",
     type=click.FloatRange(0, 3.3),
@@ -66,12 +72,10 @@ def info(port):
     type=click.FloatRange(3.3 / 1023, 3.3),
     help="How big voltage difference should be between measurements. Given in Volts, automatically recalculated to ADC values",
 )
-def scan(start, stop, output, repeat, stepsize):
+def scan(start, stop, output, repeat, stepsize, port):
     # originele functie ging met ADC waardes
-    stepsize_converted = stepsize * conversie
-    scanresult = DiodeExperiment.scan(
-        int(start * conversie), int(stop * conversie), repeat, stepsize_converted
-    )
+    measurements = DiodeExperiment(port)
+    scanresult = measurements.scan(int(start), int(stop), repeat, stepsize)
     L_voltage_AVG = scanresult[0]
     L_current_AVG = scanresult[1]
     L_STD_V = scanresult[2]
