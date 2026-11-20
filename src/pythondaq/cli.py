@@ -49,10 +49,15 @@ def list():
     default=1,
     help="How many times the experiment has to be ran before a graph gets made.",
 )
-def scan(start, stop, output, repeat):
+@click.option(
+    "--stepsize",
+    default=3.3 / 1023,
+    help="How big voltage difference should be between measurements. Given in Volts, automatically recalculated to ADC values",
+)
+def scan(start, stop, output, repeat, stepsize):
     # originele functie ging met ADC waardes
     scanresult = DiodeExperiment.scan(
-        int(start * conversie), int(stop * conversie), repeat
+        int(start * conversie), int(stop * conversie), repeat, stepsize
     )
     L_voltage_AVG = scanresult[0]
     L_current_AVG = scanresult[1]

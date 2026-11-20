@@ -8,7 +8,7 @@ from pythondaq.diode_experiment import ArduinoDevice, DiodeExperiment, list_reso
 # Deze activeren als geen arduino beschikbaar is
 # device = ArduinoDevice(port="SIM")
 
-output = DiodeExperiment.scan(0, 1023, 3)
+output = DiodeExperiment.scan(0, 1023, 3, 3.3 / 1023)
 L_voltage_AVG = output[0]
 L_current_AVG = output[1]
 L_STD_V = output[2]

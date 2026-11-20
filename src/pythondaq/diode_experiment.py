@@ -28,7 +28,7 @@ class DiodeExperiment:
     This class simulates an experiment that contains a LED-light and a resistance, supported by multiple voltage-measurers and an Arduino device
     """
 
-    def scan(start, stop, repeat):
+    def scan(start, stop, repeat, stepsize):
         """This function allows the user to run the diode experiment over a customized range of ADC-values.
 
         These automatically get tested and the values get returned in voltage, which is more useful for physicists.
@@ -56,7 +56,7 @@ class DiodeExperiment:
         L_STD_I = []
 
         # stop +1 zodat de maximale ADC waarde 1023 is en de for-loop 1 verder moet
-        for x in range(start, stop + 1, 1):
+        for x in range(start, stop + 1, stepsize):
             # resetten van aantal metingen en spanning op lampje (range begint op 0)
             aantal_metingen = 0
             device.set_output_value(x)
