@@ -18,7 +18,19 @@ def cmd_group():
 
 @cmd_group.command("list")
 def list():
+    """Prints all connected devices, essential for DiodeExperiment as the right device has to be activated"""
     print(list_resources())
+
+
+@cmd_group.command("info")
+@click.argument(
+    "port",
+    type=str,
+    help="What port to get the identification string from. Useful when multiple devices are connected to the same device",
+)
+def info(port):
+    """Gets the complicated code-variant of the identification given with the subcommand list"""
+    print(ArduinoDevice(port).get_identification)
 
 
 @cmd_group.command("scan")
@@ -57,7 +69,6 @@ def list():
 def scan(start, stop, output, repeat, stepsize):
     # originele functie ging met ADC waardes
     stepsize_converted = stepsize * conversie
-    print(stepsize_converted)
     scanresult = DiodeExperiment.scan(
         int(start * conversie), int(stop * conversie), repeat, stepsize_converted
     )

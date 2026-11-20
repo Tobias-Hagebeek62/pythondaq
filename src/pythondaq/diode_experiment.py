@@ -29,6 +29,7 @@ class DiodeExperiment:
     """
 
     def scan(start, stop, repeat, stepsize):
+        device = ArduinoDevice(port="ASRL5::INSTR")
         """This function allows the user to run the diode experiment over a customized range of ADC-values.
 
         These automatically get tested and the values get returned in voltage, which is more useful for physicists.
@@ -106,29 +107,3 @@ class DiodeExperiment:
             L_Voltage_tot,
             L_Current_tot,
         )
-
-
-# Deze activeren op locatie
-device = ArduinoDevice(port="ASRL5::INSTR")
-
-# Deze activeren als geen arduino beschikbaar is
-# device = ArduinoDevice(port="SIM")
-
-
-# Volgens voorbeeldcode moet de plot in run_experiment.py
-
-# plt.errorbar(
-#     L_voltage_AVG,
-#     L_current_AVG,
-#     xerr=L_STD_V,
-#     yerr=L_STD_I,
-#     label="Errorbars",
-#     fmt="",
-#     markersize=0,
-# )
-
-# # data zit verstopt achter errorbars door hoge concentratie punten
-# plt.scatter(L_voltage_AVG, L_current_AVG, label="Data", s=10, alpha=0.7)
-
-# plt.legend()
-# plt.show()
