@@ -95,8 +95,6 @@ def scan(start, stop, output, repeat, stepsize, port, graph):
     L_current_AVG = scanresult[1]
     L_STD_V = scanresult[2]
     L_STD_I = scanresult[3]
-    L_voltage_tot = scanresult[4]
-    L_current_tot = scanresult[5]
 
     # nieuwe CSV-file gemaakt, sinds de "mock-arduino" niet echte metingen zijn
     with open(f"{output}.csv", "w", newline="") as csvfile:
