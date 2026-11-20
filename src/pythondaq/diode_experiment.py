@@ -32,7 +32,7 @@ class DiodeExperiment:
         self.device = ArduinoDevice(port)
 
     def scan(self, start, stop, repeat, stepsize):
-        """This function allows the user to run the diode experiment over a customized range of ADC-values.
+        """This function allows the user to run the diode experiment over a customized range of Volt-values.
 
         These automatically get tested and the values get returned in voltage, which is more useful for physicists.
         These automatically get saved in a csv-file, which updates every time this function is called
