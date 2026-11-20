@@ -42,8 +42,8 @@ def list(search):
 
 
 @cmd_group.command("info")
-@click.argument(
-    "port",
+@click.option(
+    "--port",
     type=str,
     help="What port to get the identification string from. Useful when multiple devices are connected to the same device",
 )
